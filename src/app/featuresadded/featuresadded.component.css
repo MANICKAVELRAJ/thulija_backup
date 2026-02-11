@@ -1,0 +1,348 @@
+.sidenav-container {
+  width: 100%;
+  height: 100vh;
+  background: #fafafa;
+}
+
+.sidenav {
+  width: 240px;
+  background: white;
+  border-right: 1px solid #e0e0e0;
+  transition: width 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.sidenav.collapsed {
+  width: 72px !important;
+}
+
+mat-sidenav-content {
+  transition: margin-left 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden !important;
+}
+
+.main-content-wrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.scroll-container {
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.scroll-container.with-property-panel {
+  width: calc(100% - 400px);
+}
+
+.canvas {
+  position: relative;
+  width: 3200px;
+  height: 3200px;
+  background: white;
+  background-image:
+    radial-gradient(circle at 10px 10px, #c9c9c9 1px, transparent 1px),
+    radial-gradient(circle at 30px 30px, #e0e0e0 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.arrows-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.draggable-item {
+  position: absolute;
+  min-width: 100px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.14);
+  cursor: grab;
+  user-select: none;
+  z-index: 10;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  transform: scale(1.04);
+}
+
+.draggable-item:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+.draggable-item.selected {
+  box-shadow: 0 0 0 3px #1976d2;
+  transform: scale(1.02);
+}
+
+.item-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+.item-label {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sidebar_icon_color {
+  background-color: white !important;
+  color: #444 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+}
+
+.action-1 { background: linear-gradient(135deg, #1976d2, #42a5f5); }
+.action-2 { background: linear-gradient(135deg, #7b1fa2, #ab47bc); }
+.continue-btn { background: linear-gradient(135deg, #388e3c, #66bb6a); }
+.reject-btn { background: linear-gradient(135deg, #d32f2f, #ef5350); }
+
+/* Toolbar styles */
+.sidenav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidenav-header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.actions-group {
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-label {
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+  text-align: center;
+}
+
+.sidenav.collapsed .action-label {
+  display: none;
+}
+
+.clear-btn {
+  margin: auto 12px 20px;
+  color: #c62828 !important;
+  justify-content: flex-start !important;
+}
+
+.sidenav.collapsed .clear-btn {
+  justify-content: center !important;
+  width: 48px;
+  min-width: 48px;
+  padding: 0 !important;
+  margin: auto;
+}
+
+/* Property Panel Styles */
+.property-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 400px;
+  height: 100vh;
+  background: white;
+  border-left: 1px solid #e0e0e0;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-panel.open {
+  transform: translateX(0);
+}
+
+.property-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f5f5f5;
+}
+
+.property-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.property-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.property-section {
+  padding: 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.property-item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.property-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #1976d2;
+}
+
+.property-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.property-form {
+  padding: 20px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+.field-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: #1976d2;
+}
+
+.property-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.property-actions button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .sidenav {
+    width: 72px;
+  }
+  
+  .sidenav.collapsed {
+    width: 0px !important;
+    border-right: none;
+  }
+  
+  .action-label {
+    display: none;
+  }
+  
+  .clear-btn {
+    justify-content: center !important;
+    width: 48px;
+    min-width: 48px;
+    padding: 0 !important;
+    margin: auto;
+  }
+
+  .property-panel {
+    width: 320px;
+  }
+
+  .scroll-container.with-property-panel {
+    width: calc(100% - 320px);
+  }
+}
+
+@media (max-width: 480px) {
+  .sidenav {
+    width: 60px;
+  }
+  
+  .sidenav-header {
+    padding: 0 8px;
+  }
+  
+  .actions-group {
+    padding: 16px 6px;
+    gap: 20px;
+  }
+
+  .property-panel {
+    width: 100%;
+  }
+
+  .scroll-container.with-property-panel {
+    display: none;
+  }
+}

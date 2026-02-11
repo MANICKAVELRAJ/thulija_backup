@@ -1,0 +1,184 @@
+.workspace-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.left-sidebar {
+  width: 300px;
+  border-right: 1px solid #ddd;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.right-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+}
+
+.worksheet-toolbar {
+  display: flex;
+  gap: 24px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #dcdcdc;
+  background: #ffffff;
+}
+
+.shelf {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shelf-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+}
+
+.input-dropzone {
+  min-width: 300px;
+  min-height: 48px;
+  padding: 8px;
+  border: 1px dashed #cfcfcf;
+  border-radius: 4px;
+  background: #ffffff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: move;
+  white-space: nowrap;
+}
+
+.pill.blue {
+  background: #4f97b5;
+  color: #ffffff;
+}
+
+.pill .close {
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.pill .close:hover {
+  opacity: 1;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid #d0d0d0;
+  background: #ffffff;
+  font-size: 13px;
+  cursor: move;
+  border-radius: 4px;
+}
+
+.field-item:hover {
+  background-color: #f5f5f5;
+}
+
+.field-item mat-icon {
+  color: #888;
+  font-size: 18px;
+}
+
+.worksheet-canvas {
+  flex: 1;
+  margin: 16px;
+  border: 2px dashed #c0c0c0;
+  background: #ffffff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 14px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.table-name-card {
+  margin: 16px;
+  padding: 12px !important;
+  font-weight: 500;
+}
+
+.table-data-card {
+  margin: 0 16px 16px 16px;
+}
+
+.marks-container {
+  padding: 8px;
+}
+
+.marks-select {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.marks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.marks-btn {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.marks-btn.full {
+  grid-column: span 2;
+}
+
+.placeholder {
+  font-size: 13px;
+  color: #777;
+  padding: 8px;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 8px 10px;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
