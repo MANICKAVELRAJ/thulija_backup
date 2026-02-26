@@ -1,0 +1,185 @@
+<div class="workspace-layout">
+
+  <!-- ========== LEFT SIDEBAR ========== -->
+  <div class="left-sidebar" [class.collapsed]="isSidebarCollapsed">
+    <div class="analytics-panel">
+      <div class="panel-card accent">
+        <h3 class="panel-title">Chart List</h3>
+      </div>
+
+      <div class="chart-list" cdkDropList id="chartList" [cdkDropListData]="service.chartTypes"
+        [cdkDropListConnectedTo]="['canvasList']" cdkDropListSortingDisabled>
+
+        <div class="chart-item" *ngFor="let chart of service.chartTypes" cdkDrag [cdkDragData]="chart">
+          <div class="chart-icon" [innerHTML]="service.getChartSvg(chart.type)"></div>
+          <span class="chart-name">{{ chart.name }}</span>
+          <ng-template cdkDragPreview>
+            <div class="chart-drag-preview">
+              <span class="preview-icon" [innerHTML]="service.getChartSvg(chart.type)"></span>
+              <span>{{ chart.name }}</span>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RIGHT CONTENT ========== -->
+  <div class="right-content">
+    <div class="worksheet-title">
+      <span>Canvas Sheet</span>
+      <button class="header-toggle" (click)="toggleSidebar()"
+        [matTooltip]="isSidebarCollapsed ? 'Expand sidebar' : 'Expand Canvas'" matTooltipPosition="right">
+        <mat-icon>{{ isSidebarCollapsed ? 'menu' : 'fullscreen' }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="worksheet" cdkDropList id="canvasList" [cdkDropListConnectedTo]="['chartList']"
+      (cdkDropListDropped)="dropOnCanvas($event)">
+
+      <div class="canvas-item" *ngFor="let chart of service.canvasCharts; let i = index"
+        [style.left.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.x : chart.x"
+        [style.top.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.y : chart.y"
+        [style.width.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.width : chart.width"
+        [style.height.px]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem?.height : chart.height"
+        [style.zIndex]="chart.zIndex" (mousedown)="startMove($event, i)" (click)="openPropertyPanel(chart)">
+
+        <!-- HEADER -->
+        <div class="canvas-header">
+          <span class="canvas-header-title">{{ chart.name }}</span>
+          <span class="canvas-close" (click)="removeChart(chart.id); $event.stopPropagation()">
+            <mat-icon>close</mat-icon>
+          </span>
+        </div>
+
+        <!-- BODY -->
+        <div class="canvas-body">
+          <ng-container *ngIf="chart.data && chart.data.length > 0; else defaultIcon">
+            <app-chart-renderer [item]="propertyPanelOpen && selectedItem?.id === chart.id ? editableItem! : chart">
+            </app-chart-renderer>
+          </ng-container>
+          <ng-template #defaultIcon>
+            <div class="canvas-placeholder">
+              <span class="canvas-icon" [innerHTML]="service.getChartSvg(chart.type)"></span>
+              <span class="canvas-placeholder-text">Click to configure</span>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- RESIZE HANDLES -->
+        <div class="resize-handle rh-n" (mousedown)="startResize($event, i, 'n');  $event.stopPropagation()"></div>
+        <div class="resize-handle rh-s" (mousedown)="startResize($event, i, 's');  $event.stopPropagation()"></div>
+        <div class="resize-handle rh-e" (mousedown)="startResize($event, i, 'e');  $event.stopPropagation()"></div>
+        <div class="resize-handle rh-w" (mousedown)="startResize($event, i, 'w');  $event.stopPropagation()"></div>
+        <div class="resize-handle rh-ne" (mousedown)="startResize($event, i, 'ne'); $event.stopPropagation()"></div>
+        <div class="resize-handle rh-nw" (mousedown)="startResize($event, i, 'nw'); $event.stopPropagation()"></div>
+        <div class="resize-handle rh-se" (mousedown)="startResize($event, i, 'se'); $event.stopPropagation()"></div>
+        <div class="resize-handle rh-sw" (mousedown)="startResize($event, i, 'sw'); $event.stopPropagation()"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BACKDROP -->
+  <div class="backdrop" *ngIf="propertyPanelOpen" (click)="cancelChanges()"></div>
+
+  <!-- PROPERTY PANEL -->
+  <div class="property-panel" [class.open]="propertyPanelOpen" (click)="$event.stopPropagation()">
+    <div class="property-header">
+      <div class="header-left">
+        <span class="property-icon" [innerHTML]="service.getChartSvg(selectedItem?.type)"></span>
+        <div>
+          <h3>{{ selectedItem?.name }}</h3>
+          <span class="subtitle">Chart Properties</span>
+        </div>
+      </div>
+      <button class="clbtn" (click)="cancelChanges()"><mat-icon>close</mat-icon></button>
+    </div>
+
+    <input type="file" hidden #fileInput accept=".json,.xlsx,.xls" (change)="onFileSelected($event)" />
+
+    <div class="property-content" *ngIf="editableItem">
+      <div class="property-section">
+        <h4><mat-icon>map</mat-icon> Position</h4>
+        <div class="row">
+          <label>X</label>
+          <input type="number" [(ngModel)]="editableItem.x" (ngModelChange)="checkOverlapLive(editableItem)">
+        </div>
+        <div class="row">
+          <label>Y</label>
+          <input type="number" [(ngModel)]="editableItem.y" (ngModelChange)="checkOverlapLive(editableItem)">
+        </div>
+      </div>
+
+      <div class="property-section">
+        <h4>Size</h4>
+        <div class="row">
+          <label>Width</label>
+          <input type="number" [(ngModel)]="editableItem.width" (ngModelChange)="onSizeChange()">
+        </div>
+        <div class="row">
+          <label>Height</label>
+          <input type="number" [(ngModel)]="editableItem.height" (ngModelChange)="onSizeChange()">
+        </div>
+      </div>
+
+      <div class="property-section data-section">
+        <div class="data-header">
+          <h4>Data Fields</h4>
+          <button class="upload-fab" (click)="fileInput.click()" matTooltip="Upload JSON / Excel"
+            matTooltipPosition="left">
+            <mat-icon class="icon-plus">add</mat-icon>
+            <mat-icon class="icon-upload">upload</mat-icon>
+          </button>
+        </div>
+
+        <div class="row upload-status" *ngIf="uploadProgress > 0" [class.success]="uploadProgress === 100">
+          <small *ngIf="uploadProgress < 100">Uploading... {{ uploadProgress }}%</small>
+          <small *ngIf="uploadProgress === 100">✅ Upload Completed!</small>
+        </div>
+
+        <div class="row" *ngIf="!isCustomDataUploaded">
+          <label>Table Name</label>
+          <select [(ngModel)]="editableItem.tableId" (ngModelChange)="onTableSelect($event)"
+            [disabled]="isCustomDataUploaded">
+            <option value="">Choose Table</option>
+            <option *ngFor="let p of service.pages$ | async" [value]="p.id">{{ p.table_name }}</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label>Chart Type</label>
+          <select [(ngModel)]="editableItem.type" (ngModelChange)="refreshGraph(editableItem)">
+            <option value="bar">Bar Chart</option>
+            <option value="column">Column Chart</option>
+            <option value="stackedBar">Stacked Bar</option>
+            <option value="stackedColumn">Stacked Column</option>
+            <option value="pie">Pie Chart</option>
+          </select>
+        </div>
+
+        <div class="row" *ngIf="chartRequirements?.selectableX">
+          <label>{{ chartRequirements?.xLabel || 'X Field' }}</label>
+          <select [(ngModel)]="editableItem.xField" (ngModelChange)="onXFieldChange($event)">
+            <option value="">-- Select Field --</option>
+            <option *ngFor="let field of editableItem.fields" [value]="field">{{ field }}</option>
+          </select>
+        </div>
+
+        <div class="row" *ngIf="chartRequirements?.selectableY">
+          <label>{{ chartRequirements?.yLabel || 'Y Field' }}</label>
+          <select [(ngModel)]="editableItem.yField" (ngModelChange)="onYFieldChange($event)">
+            <option value="">-- Select Field --</option>
+            <option *ngFor="let field of editableItem.fields" [value]="field">{{ field }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="property-footer">
+      <button class="btn cancel" (click)="cancelChanges()">Cancel</button>
+      <button class="btn save" (click)="saveChanges()">Save</button>
+    </div>
+  </div>
+
+</div>

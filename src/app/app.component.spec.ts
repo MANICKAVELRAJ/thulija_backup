@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'iTerschartS'`, () => {
+  it(`should have as title 'DDChart'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('iTerschartS');
+    expect(app.title).toEqual('DDChart');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, iTerschartS');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, DDChart');
   });
 });
