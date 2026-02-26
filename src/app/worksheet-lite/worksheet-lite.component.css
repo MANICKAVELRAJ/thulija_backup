@@ -1,0 +1,347 @@
+/* ================================================================
+   WORKSHEET-LITE  —  full stylesheet
+================================================================ */
+:root {
+  --navy:   #0a2540;
+  --blue:   #1e88e5;
+  --border: #cfd8dc;
+}
+
+/* ================================================================
+   LAYOUT
+================================================================ */
+.workspace-layout {
+  height: 100vh;
+  display: flex;
+  background-color: #b0bec5;
+  font-family: 'Times New Roman', Times, serif;
+  overflow: hidden;
+}
+
+.right-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ================================================================
+   LEFT SIDEBAR
+================================================================ */
+.left-sidebar {
+  color: navy;
+  width: auto;
+  min-width: 160px;
+  padding: 12px;
+  background: #b0bec5;
+  border-right: 2px solid #e3f2fd;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width .3s ease, padding .3s ease, min-width .3s ease;
+}
+.left-sidebar.collapsed { width: 0; min-width: 0; padding: 0; overflow: hidden; }
+
+.panel-card {
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.panel-title {
+  margin: 0;
+  font-family: 'Lucida Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  transition: transform .35s ease, letter-spacing .35s ease;
+}
+.panel-card:hover .panel-title { transform: translateX(10px) scale(2); letter-spacing: 1px; }
+
+.chart-list { display: flex; flex-direction: column; gap: 4px; font-weight: 600; margin-top: 1px; }
+.chart-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  cursor: grab; user-select: none;
+  transition: background .2s ease, transform .15s ease;
+}
+.chart-item:hover  { background: rgba(0,0,0,.04); }
+.chart-item:active { cursor: grabbing; transform: scale(.98); }
+
+.chart-icon, .preview-icon, .property-icon { width: 30px; height: 30px; display: inline-block; }
+.chart-icon svg, .preview-icon svg, .property-icon svg { width: 110%; height: 110%; }
+
+.chart-drag-preview {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: navy; border-radius: 10px; color: #fff;
+}
+
+/* ================================================================
+   WORKSHEET HEADER
+================================================================ */
+.worksheet-title {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  display: flex;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 16px;
+  background: #eceff1;
+  color: navy;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px;
+  border-radius: 8px;
+  border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+.header-toggle {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  width: 35px; height: 35px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  cursor: pointer;
+}
+.header-toggle mat-icon { transform: scale(1.4); color: white; display: flex; align-items: center; justify-content: center; }
+.header-toggle:hover mat-icon { color: #1976d2; background: snow; font-size: x-large; }
+
+/* ================================================================
+   WORKSHEET (canvas drop zone)
+================================================================ */
+.worksheet {
+  position: relative;
+  flex: 1;
+  margin: 0 10px 10px;
+  background: #fafafa;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;        /* clip children — no scroll bars on canvas */
+}
+
+/* CDK placeholder: hide ghost */
+.cdk-drag-placeholder { display: none !important; }
+
+/* ================================================================
+   CANVAS ITEM  ← key fix: flex column so body fills remaining height
+================================================================ */
+.canvas-item {
+  position:   absolute;
+  min-width:  180px;
+  min-height: 140px;
+  display:    flex;
+  flex-direction: column;   /* header top, body fills rest */
+  background: #ffffff;
+  border:     1px solid #d1d5db;
+  border-radius: 12px;
+  cursor:     grab;
+  overflow:   visible;      /* needed for resize handles outside border */
+  box-shadow: 0 4px 10px rgba(0,0,0,.05);
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+.canvas-item:hover  { box-shadow: 0 10px 25px rgba(0,0,0,.1); border-color: #3b82f6; }
+.canvas-item:active { cursor: grabbing; }
+
+/* ---- HEADER ---- */
+.canvas-header {
+  display:        flex;
+  justify-content: space-between;
+  align-items:    center;
+  padding:        6px 10px;
+  background:     #f8fafc;
+  font-weight:    600;
+  font-size:      13px;
+  color:          #1e293b;
+  border-bottom:  1px solid #e2e8f0;
+  border-radius:  12px 12px 0 0;
+  flex-shrink:    0;          /* never shrink */
+  height:         37px;
+  box-sizing:     border-box;
+  user-select:    none;
+}
+.canvas-header-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex: 1; }
+
+.canvas-close { cursor: pointer; display: flex; align-items: center; }
+.canvas-close mat-icon { font-size: 18px; color: #90a4ae; transition: color .15s; }
+.canvas-close:hover mat-icon { color: #e53935; }
+
+/* ---- BODY — takes ALL remaining height after header ---- */
+.canvas-body {
+  flex:       1;            /* ← fills leftover height */
+  min-height: 0;            /* important: allow flex child to shrink */
+  overflow:   hidden;       /* clip chart, no scrollbar */
+  position:   relative;
+  display:    flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+/* app-chart-renderer fills the body 100% */
+.canvas-body app-chart-renderer {
+  display: block;
+  width:   100%;
+  height:  100%;
+}
+
+/* placeholder when no data */
+.canvas-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 8px;
+  color: #90a4ae; user-select: none;
+}
+.canvas-placeholder-text { font-size: 11px; font-family: Inter, sans-serif; }
+.canvas-icon { display: inline-block; width: 40px; height: 40px; }
+.canvas-icon svg { width: 100%; height: 100%; display: block; }
+
+/* ================================================================
+   RESIZE HANDLES
+================================================================ */
+.resize-handle {
+  position:   absolute;
+  z-index:    20;
+  background: #1e88e5;
+  border:     2px solid #fff;
+  border-radius: 3px;
+  opacity:    0;
+  transition: opacity .18s ease;
+}
+.canvas-item:hover .resize-handle { opacity: 1; }
+
+/* edge bars */
+.rh-n { top:-4px;    left:50%; transform:translateX(-50%); width:40px; height:8px;  cursor:n-resize; }
+.rh-s { bottom:-4px; left:50%; transform:translateX(-50%); width:40px; height:8px;  cursor:s-resize; }
+.rh-e { right:-4px;  top:50%;  transform:translateY(-50%); width:8px;  height:40px; cursor:e-resize; }
+.rh-w { left:-4px;   top:50%;  transform:translateY(-50%); width:8px;  height:40px; cursor:w-resize; }
+
+/* corner dots */
+.rh-ne { top:-5px;    right:-5px;  width:12px; height:12px; cursor:ne-resize; border-radius:50%; }
+.rh-nw { top:-5px;    left:-5px;   width:12px; height:12px; cursor:nw-resize; border-radius:50%; }
+.rh-se { bottom:-5px; right:-5px;  width:12px; height:12px; cursor:se-resize; border-radius:50%; }
+.rh-sw { bottom:-5px; left:-5px;   width:12px; height:12px; cursor:sw-resize; border-radius:50%; }
+
+/* highlight border while resizing */
+.canvas-item:has(.resize-handle:active) {
+  border-color: #1e88e5;
+  box-shadow: 0 0 0 2px rgba(30,136,229,.3);
+}
+
+/* ================================================================
+   BACKDROP
+================================================================ */
+.backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 90;
+}
+
+/* ================================================================
+   PROPERTY PANEL
+================================================================ */
+.property-panel {
+  position: fixed; top: 0; right: -380px;
+  width: 360px; height: 100vh;
+  background: #f7f9fc;
+  box-shadow: -8px 0 24px rgba(0,0,0,.18);
+  transition: right .3s ease;
+  z-index: 100;
+  display: flex; flex-direction: column;
+  font-family: Inter, Roboto, sans-serif;
+}
+.property-panel.open { right: 0; }
+
+.property-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8fafc;
+}
+.property-header h3 { margin: 0; font-size: 16px; font-weight: 600; color: #263238; }
+.header-left { display: flex; gap: 12px; align-items: center; }
+.subtitle { font-size: 12px; color: #78909c; }
+
+.clbtn { background: transparent; border: none; cursor: pointer; }
+.clbtn mat-icon { color: #333; font-size: 24px; }
+.clbtn mat-icon:hover { color: red; }
+
+.property-content { padding: 16px 18px; overflow-y: auto; flex: 1; }
+
+.property-section {
+  padding: 14px 16px; border-radius: 14px; margin-bottom: 16px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+  border-left: 6px solid transparent;
+  transition: transform .2s ease;
+}
+.property-section:hover { transform: translateY(-1px); }
+.property-section:nth-of-type(1) { background: #e3f2fd; border-left-color: #1e88e5; }
+.property-section:nth-of-type(2) { background: #e8f5e9; border-left-color: #43a047; }
+.property-section:nth-of-type(3) { background: #fff3e0; border-left-color: #fb8c00; }
+
+.property-section h4 {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 600; margin: 0 0 12px; color: #333;
+}
+.property-section h4 mat-icon { font-size: 18px; }
+
+.property-section .row { display: flex; flex-direction: column; margin-bottom: 10px; }
+.property-section label { font-size: 12px; color: #555; margin-bottom: 4px; }
+.property-section input,
+.property-section select {
+  padding: 6px 8px; border-radius: 8px;
+  border: 1px solid #cfd8dc; background: #fff; font-size: 13px;
+}
+.property-section input:focus,
+.property-section select:focus { outline: none; border-color: #1e88e5; }
+
+.property-footer {
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding: 12px 16px; border-top: 1px solid #e0e0e0; background: #f9fbfd;
+}
+.property-footer .btn {
+  min-width: 90px; padding: 7px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; border: none; cursor: pointer;
+  transition: all .2s ease;
+}
+.btn.cancel { background: #eceff1; color: #37474f; }
+.btn.cancel:hover { background: #cfd8dc; }
+.btn.save {
+  background: linear-gradient(135deg, #0d47a1, #1565c0, #42a5f5);
+  color: #fff; box-shadow: 0 4px 10px rgba(21,101,192,.35);
+}
+.btn.save:hover { opacity: .92; }
+.btn.cancel:active, .btn.save:active { transform: scale(.97); }
+
+/* ================================================================
+   DATA SECTION inside property panel
+================================================================ */
+.data-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+
+.upload-fab {
+  position: relative; width: 42px; height: 42px;
+  border-radius: 50%; border: none; cursor: pointer;
+  background: linear-gradient(135deg, #1565c0, #42a5f5);
+  box-shadow: 0 6px 14px rgba(21,101,192,.45), inset 0 0 0 1px rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s ease; overflow: hidden;
+}
+.upload-fab:hover  { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 22px rgba(21,101,192,.6); }
+.upload-fab:active { transform: scale(.95); }
+.upload-fab mat-icon { position: absolute; font-size: 20px; color: #fff; transition: all .25s ease; }
+.upload-fab .icon-plus   { opacity: 1; transform: rotate(0) scale(1); }
+.upload-fab .icon-upload { opacity: 0; transform: translateY(8px) scale(.8); }
+.upload-fab:hover .icon-plus   { opacity: 0; transform: rotate(90deg) scale(.5); }
+.upload-fab:hover .icon-upload { opacity: 1; transform: translateY(0) scale(1); }
+
+.upload-status small { font-size: 12px; color: green; }
+.upload-status.success { animation: uploadBlink .8s ease-in-out 2; }
+@keyframes uploadBlink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+.row select {
+  flex: 1; padding: 7px 10px; border-radius: 8px;
+  border: 1px solid #ccc; font-size: 13px; background: #fff; cursor: pointer;
+}
+.row select:focus { outline: none; border-color: #1565c0; box-shadow: 0 0 0 2px rgba(21,101,192,.15); }
+.row select:disabled { background: #f2f2f2; cursor: not-allowed; }
